@@ -1,3 +1,4 @@
+DB_DIR=db/migration
 DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
 
 postgres:
@@ -9,10 +10,13 @@ createdb:
 dropdb:
 	docker exec -it postgres15 dropdb simple_bank
 
+migratecreate:
+	migrate create -ext sql -dir "$(DB_DIR)" -seq init_schema
+
 migrateup:
 	migrate -path db/migration -database "$(DB_URL)" -verbose up
 
 migratedown:
 	migrate -path db/migration --database "$(DB_URL)" -verbose down
 
-.PHONY: postgres createdb dropdb migrateup migratedown
+.PHONY: postgres createdb dropdb migratecreate migrateup migratedown
