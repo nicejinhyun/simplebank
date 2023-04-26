@@ -1,5 +1,6 @@
 DB_DIR=db/migration
 DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
+PWD=.
 
 postgres:
 	docker run --name postgres15 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:15-alpine
@@ -19,4 +20,7 @@ migrateup:
 migratedown:
 	migrate -path db/migration --database "$(DB_URL)" -verbose down
 
-.PHONY: postgres createdb dropdb migratecreate migrateup migratedown
+sqlc:
+	docker run --rm -v ${pwd}:/src -w /src kjconroy/sqlc generate
+	
+.PHONY: postgres createdb dropdb migratecreate migrateup migratedown sqlc
